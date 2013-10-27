@@ -93,19 +93,7 @@ fun check_pat p =
     in
 	isDiff (getStr p)
     end
-(*
-datatype pattern = Wildcard
-		 | Variable of string
-		 | UnitP
-		 | ConstP of int
-		 | TupleP of pattern list
-		 | ConstructorP of string * pattern
 
-datatype valu = Const of int
-	      | Unit
-	      | Tuple of valu list
-	      | Constructor of string * valu
-*)
 fun match (v, p) = 
     case (v, p) of
 	(_, Wildcard) => SOME []
@@ -122,36 +110,31 @@ fun first_match v =
 
 fun get_pattern_type (type_data ,pattern) =
   let 
- 
-   (*used to check constructor types*)
-   fun check_type_data (type_data1, datatype_str,cons_type)  =
-               case type_data1 of
-                  []=> raise NoAnswer
-                  |(x,y,z)::xs => if x = datatype_str
-                                  then Datatype y
-                                  else check_type_data(xs, datatype_str,cons_type)
-
- (*just helper funxtion to handle Tuple pattern*)
-   fun helper ptn =
-     case  ptn of
-      [] => []  
-     |x::xs  => (get_pattern_type(type_data, x))::helper xs
+      fun check_type_data (type_data1, datatype_str,cons_type) =
+	  case type_data1 of
+              []=> raise NoAnswer
+             |(x,y,z)::xs => if x = datatype_str
+                             then Datatype y
+                             else check_type_data(xs, datatype_str,cons_type)
+					     
+      fun helper ptn =
+	  case  ptn of
+	      [] => []  
+	     |x::xs  => (get_pattern_type(type_data, x))::helper xs
   in
   
-  case pattern of
-    Wildcard => Anything
-   |UnitP => UnitT
-   |ConstP v => IntT
-   |TupleP v =>  TupleT(helper v)
-   |Variable v1 =>Anything
-   |ConstructorP(s,v)=>check_type_data (type_data, s, get_pattern_type(type_data,v)) 
+      case pattern of
+	  Wildcard => Anything
+	 |UnitP => UnitT
+	 |ConstP v => IntT
+	 |TupleP v =>  TupleT(helper v)
+	 |Variable v1 =>Anything
+	 |ConstructorP(s,v)=>check_type_data (type_data, s, get_pattern_type(type_data,v)) 
 end
 
 
  fun get_most_lenient  (typ1 ,typ2) =
      let 
-         
-         (*just helper funxtion to handle Tuple type*)
          fun helper typelst =
              case  typelst of
                  ([],[]) => []  
