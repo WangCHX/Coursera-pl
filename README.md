@@ -1,4 +1,4 @@
 Coursera-pl
 ===========
-##      Solution
+## Solution
 Coursera Programming Language Homework.
